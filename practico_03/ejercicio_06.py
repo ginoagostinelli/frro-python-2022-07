@@ -18,6 +18,18 @@ class Article:
 
     # Completar
 
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        return f"Article('{self.name}')"
+
+    def __eq__(self, other: Article) -> bool:
+        return self.name == other.name
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+    
 
 # NO MODIFICAR - INICIO
 class ShoppingCart:
@@ -48,6 +60,18 @@ class ShoppingCart:
         return self
 
     # NO MODIFICAR - FIN
+
+    def __str__(self) -> str:
+            return str([str(i) for i in self.articles])
+
+    def __repr__(self) -> str:
+        return f"ShoppingCart({[art for art in self.articles]})"
+
+    def __eq__(self, other: ShoppingCart):
+        return set(self.articles) == set(other.articles)
+
+    def __add__(self, other: ShoppingCart) -> ShoppingCart:
+        return ShoppingCart(self.articles + other.articles)
 
     # Completar
 
