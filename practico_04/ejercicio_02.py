@@ -10,7 +10,6 @@ import sqlite3
 def agregar_persona(nombre, nacimiento, dni, altura):
     """Implementar la funcion agregar_persona, que inserte un registro en la 
     tabla Persona y devuelva los datos ingresados el id del nuevo registro."""
-    pass # Completar
 
     conn = sqlite3.connect("Base")
     cursor = conn.cursor()
