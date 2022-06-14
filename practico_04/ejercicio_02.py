@@ -1,11 +1,8 @@
 """Base de Datos SQL - Alta"""
 
 import datetime
-
-from django import db
-from ejercicio_01 import reset_tabla
 import sqlite3
-
+from ejercicio_01 import reset_tabla
 
 def agregar_persona(nombre, nacimiento, dni, altura):
     """Implementar la funcion agregar_persona, que inserte un registro en la 
