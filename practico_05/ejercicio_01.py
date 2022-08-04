@@ -17,3 +17,8 @@ class Socio(Base):
 
     # Completar
 
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    dni = Column(Integer, nullable=False, unique=True)
+    nombre = Column(String(250))
+    apellido = Column(String(250))
+

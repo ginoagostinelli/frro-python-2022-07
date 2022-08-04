@@ -6,52 +6,76 @@ from ejercicio_01 import Base, Socio
 
 from typing import List, Optional
 
+engine = create_engine('sqlite:///my_base.sqlite')
+#Session = sessionmaker(bind=engine)
+#Base.metadata.create_all(engine)
 class DatosSocio():
 
     def __init__(self):
-        pass # Completar
+        Base.metadata.drop_all(engine)
+        Base.metadata.bind = engine
+        db_session = sessionmaker(bind=engine)
+        self.session = db_session()
+        try:
+            Base.metadata.create_all(engine)
+        except Exception as e:
+            print("Error al crear tabla: ",e)
 
     def buscar(self, id_socio: int) -> Optional[Socio]:
         """Devuelve la instancia del socio, dado su id. Devuelve None si no 
         encuentra nada.
         """
-        pass # Completar
+        return self.session.query(Socio).get(id_socio)
 
     def buscar_dni(self, dni_socio: int) -> Optional[Socio]:
         """Devuelve la instancia del socio, dado su dni. Devuelve None si no 
         encuentra nada.
         """
-        pass # Completar
+        return self.session.query(Socio).filter_by(dni = dni_socio).first()
         
     def todos(self) -> List[Socio]:
         """Devuelve listado de todos los socios en la base de datos."""
-        pass # Completar
+        return self.session.query(Socio).all()
 
     def borrar_todos(self) -> bool:
         """Borra todos los socios de la base de datos. Devuelve True si el 
         borrado fue exitoso.
         """
-        pass # Completar
+        try:
+            self.session.query(Socio).delete()
+            return True
+        except Exception as e:
+            return False
 
     def alta(self, socio: Socio) -> Socio:
         """Agrega un nuevo socio a la tabla y lo devuelve"""
-        pass # Completar
+        self.session.add(socio)
+        self.session.commit()
+        return socio
 
     def baja(self, id_socio: int) -> bool:
         """Borra el socio especificado por el id. Devuelve True si el borrado 
         fue exitoso.
         """
-        pass # Completar
+        try:
+            socio = self.buscar(id_socio)
+            self.session.delete(socio)
+            self.session.commit()
+            return True
+        except Exception as e:
+            return False
 
     def modificacion(self, socio: Socio) -> Socio:
         """Guarda un socio con sus datos modificados. Devuelve el Socio 
         modificado.
         """
-        pass # Completar
+        self.session.query(Socio).filter(Socio.id == socio.id).update({Socio.dni: socio.dni, Socio.nombre: socio.nombre, Socio.apellido: socio.apellido})
+        self.session.commit()
+        return socio
     
     def contarSocios(self) -> int:
         """Devuelve el total de socios que existen en la tabla"""
-        pass # Completar
+        return self.session.query(Socio).count()
 
 
 
