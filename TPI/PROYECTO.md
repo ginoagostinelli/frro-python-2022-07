@@ -6,7 +6,7 @@ Este es un archivo que debe completarse con los datos utilizados en el TPI. Este
 
 ## Descripción del proyecto
 
-Definir cúal es el alcance de este proyecto y los principales objetivos que debe cumplir.
+Sistema que permite al usuario visualisar y manipular informacion financiera
 
 ## Modelo de Dominio
 
@@ -22,7 +22,17 @@ Definir los requerimientos del sistema.
 
 ### Funcionales
 
-Listado y descripción breve de los requerimientos funcionales.
+ - Loguearse / Registrarse
+ - Elegir empresa/s
+ - Visualizar:
+    - Grafico historico del precio del activo
+    - Dividendos
+    - Splits
+    - Principales Accionistas
+    - Recomendaciones de diferentes organizaciones
+    - Comparacion del precio con otros activos
+ - Crear listas
+ - Guardar las empresas favoritas en listas
 
 ### No Funcionales
 
