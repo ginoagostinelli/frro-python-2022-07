@@ -3,9 +3,7 @@ from flask import Blueprint, request, jsonify, redirect, url_for
 from ..controller import users_controller, companies_controller
 from ..models.models import User, Company
 
-
 api_scope = Blueprint("api", __name__)
-
 
 @api_scope.route('/users', methods=['GET'])
 def get_list():
