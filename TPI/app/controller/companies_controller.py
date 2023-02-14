@@ -11,7 +11,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import io
 
 
-def getCompanyData(company: Company) -> Company:
+def get_company_data(company: Company) -> Company:
 
     tk = yf.Ticker("AAPL")
     stockinfo = tk.info
@@ -37,7 +37,7 @@ def getCompanyData(company: Company) -> Company:
     return companyWithData
 
 
-def getTimelinePlot(ticker: str) -> Figure:
+def get_timeline_plot(ticker: str) -> Figure:
 
     tk = yf.Ticker(ticker)
 
@@ -67,7 +67,7 @@ def getTimelinePlot(ticker: str) -> Figure:
     return timeline_base64
 
 
-def getDividendsPlot(ticker: str) -> Figure:
+def get_dividends_plot(ticker: str) -> Figure:
     tk = yf.Ticker(ticker)
 
     dividends = tk.dividends
@@ -95,7 +95,7 @@ def getDividendsPlot(ticker: str) -> Figure:
     return dividends_base64
 
 
-def getComparationPlot(ticker: str) -> Figure:
+def get_comparation_plot(ticker: str) -> Figure:
     tk = yf.Ticker(ticker)
 
     # Fechas
@@ -132,5 +132,5 @@ def getComparationPlot(ticker: str) -> Figure:
     return comparation_base64
 
 
-def getNews(company: Company) -> None:
+def get_news(company: Company) -> None:
     pass
