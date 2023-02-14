@@ -1,33 +1,37 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/company.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/company.css') }}"
+    />
     <title>Company</title>
-</head>
-<body>
+  </head>
+  <body>
     {{ name }}
-    <br>
+    <br />
     {{ country}}
-    <br>
+    <br />
     {{ city }}
-    <br>
+    <br />
     {{ industry }}
-    <br>
+    <br />
     {{ employees }}
-    <br>
+    <br />
     {{ business }}
-    <hr>
-    <h2>Grafico de la Acción</h2>
-    <img src="/timeline.png" alt="Grafico Activo">
+    <hr />
+    <h2>Cotización</h2>
+    <!--<img src="/timeline" alt="Cotización" />-->
+    <img src="data:image/png;base64, {{ timeline }}" />
+    <!-- <img src="data:image/png;base64, {{ dividends }}" /> -->
 
     <h2>Dividendos</h2>
-    <img src="/dividends.png" alt="Dividendos">
+    <img src="data:image/png;base64, {{ dividends }}" />
 
     <h2>Comparación con otras empresas</h2>
-    <!-- <img src="/comparation.png" alt="Comparación con otras empresas"> -->
-
-</body>
+    <img src="data:image/png;base64, {{ comparation }}" />
+  </body>
 </html>

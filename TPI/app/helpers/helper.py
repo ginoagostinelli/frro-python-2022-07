@@ -1,7 +1,12 @@
 import re
 
 from ..models.models import User
-from ..models.exceptions import UserNotValid
+from ..models.exceptions import UserNotValid, CompanyNotValid
+
+
+def validate_ticker(ticker: str) -> None:
+    if ticker is None or len(ticker) == 0 or any(chr.isdigit() for chr in ticker):
+        raise CompanyNotValid("The company name is incorrect")
 
 
 def validate_user(user: User) -> None:
@@ -24,6 +29,6 @@ def __email_is_valid(email: str) -> bool:
     if not isinstance(email, str):
         return False
 
-    regex = r'^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+    regex = r"^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$"
 
     return bool(re.search(regex, email))

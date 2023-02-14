@@ -11,7 +11,6 @@ fernet = Fernet(Config.DB_TOKEN)
 
 
 def _encrypt_decrypt(func) -> Callable:
-
     def helper(*args, **kwargs):
         __decrypt_database()
         yield from func(*args, **kwargs)

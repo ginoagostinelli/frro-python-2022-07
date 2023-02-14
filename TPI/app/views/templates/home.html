@@ -1,18 +1,28 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/home.css') }}"
+    />
+    <title>Buscador de empresas</title>
+  </head>
+  <body>
+    <div class="center">
+      <h1>Template</h1>
 
-{% block head%}
-<title>Buscador de empresas</title>
-{% endblock %}
-
-{% block body%}
-
-
-<div class="center">
-    
-    <h1> Template </h1>
-
-    <form action="/" method="POST">
-        <input type="text" placeholder="Ticker Empresa" name="content" id="content">
-        <input type="submit" value="Buscar">
-<div/>
-{% endblock %}
+      <form action="/company" method="GET">
+        <input
+          type="text"
+          placeholder="Ticker Empresa"
+          name="ticker"
+          id="ticker"
+        />
+        <input type="submit" value="Buscar" />
+      </form>
+    </div>
+  </body>
+</html>
