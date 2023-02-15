@@ -16,17 +16,9 @@ def get_company_data(company: Company) -> Company:
     tk = yf.Ticker("AAPL")
     stockinfo = tk.info
 
-    # companyWithData = Company(
-    #     name=stockinfo.get("longName", "Sin Datos"),
-    #     # ticker=company.ticker,
-    #     country=stockinfo.get("country", "Sin Datos"),
-    #     city=stockinfo.get("city", "Sin Datos"),
-    #     industry=stockinfo.get("industry", "Sin Datos"),
-    #     employees=stockinfo.get("fullTimeEmployees", "Sin Datos"),
-    #     business=stockinfo.get("longBusinessSummary", "Sin Datos"),
-    # )
     companyWithData = Company(
-        name=stockinfo["longName"],
+        name=stockinfo.get("longName", "Sin Datos"),
+        # ticker=company.ticker,
         country=stockinfo.get("country", "Sin Datos"),
         city=stockinfo.get("city", "Sin Datos"),
         industry=stockinfo.get("industry", "Sin Datos"),
@@ -132,5 +124,16 @@ def get_comparation_plot(ticker: str) -> Figure:
     return comparation_base64
 
 
-def get_news(company: Company) -> None:
-    pass
+def get_news(ticker: str):
+    tk = yf.Ticker(ticker)
+
+    news = {
+        "title1": tk.news[0].get("title", "No disponible"),
+        "link1": tk.news[0].get("link"),
+        "title2": tk.news[1].get("title", "No disponible"),
+        "link2": tk.news[1].get("link"),
+        "title3": tk.news[2].get("title", "No disponible"),
+        "link3": tk.news[2].get("link"),
+    }
+
+    return news

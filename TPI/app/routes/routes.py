@@ -34,6 +34,8 @@ def company():
         "business": company.business,
     }
 
+    news = companies_controller.get_news(ticker)
+
     timeline_plot = companies_controller.get_timeline_plot(ticker)
     dividends_plot = companies_controller.get_dividends_plot(ticker)
     comparation_plot = companies_controller.get_comparation_plot(ticker)
@@ -41,7 +43,8 @@ def company():
     return render_template(
         "companyData.html",
         **company_data,
+        **news,
         timeline=timeline_plot,
         dividends=dividends_plot,
-        comparation=comparation_plot
+        comparation=comparation_plot,
     )
