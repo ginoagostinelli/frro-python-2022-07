@@ -143,11 +143,12 @@ def get_comparation_plot(ticker: str) -> Figure:
 
     # Define the symbols and time range
     symbols = ["AAPL", "MSFT", "AMZN"]
-    start_date = "2020-01-01"
-    end_date = "2023-02-13"
+
+    if ticker not in [symbols]:
+        symbols.append(ticker)
 
     # Retrieve the stock data using yfinance
-    data = yf.download(symbols, start=start_date, end=end_date)["Adj Close"]
+    data = yf.download(symbols, start=start, end=today)["Adj Close"]
 
     # Create the figure using Plotly
     fig = go.Figure()
