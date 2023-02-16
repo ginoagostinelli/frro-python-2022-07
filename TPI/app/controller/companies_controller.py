@@ -9,16 +9,18 @@ import pandas as pd
 import base64
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import io
+import plotly.graph_objects as go
+import plotly.io as pio
 
 
 def get_company_data(company: Company) -> Company:
 
-    tk = yf.Ticker("AAPL")
+    tk = yf.Ticker(company.ticker)
     stockinfo = tk.info
 
     companyWithData = Company(
         name=stockinfo.get("longName", "Sin Datos"),
-        # ticker=company.ticker,
+        ticker=company.ticker,
         country=stockinfo.get("country", "Sin Datos"),
         city=stockinfo.get("city", "Sin Datos"),
         industry=stockinfo.get("industry", "Sin Datos"),
@@ -37,29 +39,41 @@ def get_timeline_plot(ticker: str) -> Figure:
     today = datetime.datetime.today()  # Fecha de hoy
     start = datetime.date(today.year - 12, 1, 1)  # Fecha - 12 años
 
-    # stockinfo = tk.info
-    grafico = tk.history(start=start, end=today)
+    # ***************#
+    # Retrieve the stock data using yfinance
+    stock = yf.download(ticker, start=start, end=today)
 
-    fig = Figure()
-    ax = fig.subplots()
-    ax.plot(grafico["Close"])
-    # ax.ylabel('Precio $')
-    # ax.xlabel('Año')
-    # ax.legend(['AP'])
+    # Create the figure using Plotly
+    fig = go.Figure()
 
-    # Building the base64 images
+    # Add the closing price trace
+    fig.add_trace(
+        go.Scatter(
+            x=stock.index,
+            y=stock["Close"],
+            name="Closing Price",
+            line=dict(color="royalblue", width=2),
+        )
+    )
 
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    fig.savefig(output, format="png")
+    # Set the layout of the figure
+    fig.update_layout(
+        title=ticker + " Stock Price",
+        xaxis_title="Date",
+        yaxis_title="Price",
+        height=500,
+        margin=dict(t=50, b=50, l=50, r=50),
+    )
 
-    output.seek(0)
-    timeline_base64 = base64.b64encode(output.getvalue()).decode("utf-8")
+    # Convert the figure to an HTML plot
+    plot_html = pio.to_html(fig, full_html=False)
 
-    return timeline_base64
+    return plot_html
 
 
 def get_dividends_plot(ticker: str) -> Figure:
+
+    """
     tk = yf.Ticker(ticker)
 
     dividends = tk.dividends
@@ -83,8 +97,41 @@ def get_dividends_plot(ticker: str) -> Figure:
     output.seek(0)
     png_base64 = base64.b64encode(output.getvalue()).decode("utf-8")
     dividends_base64 = png_base64
+    """
+    # Define the symbol and time range
+    start_date = "2020-01-01"
+    end_date = "2023-02-13"
 
-    return dividends_base64
+    # Retrieve the stock data using yfinance
+    stock = yf.Ticker(ticker)
+    dividends = stock.dividends.loc[start_date:end_date]
+
+    # Create the figure using Plotly
+    fig = go.Figure()
+
+    # Add the dividends trace
+    fig.add_trace(
+        go.Scatter(
+            x=dividends.index,
+            y=dividends,
+            name="Dividends",
+            line=dict(color="royalblue", width=2),
+        )
+    )
+
+    # Set the layout of the figure
+    fig.update_layout(
+        title=ticker + " Dividends",
+        xaxis_title="Date",
+        yaxis_title="Dividend Amount",
+        height=500,
+        margin=dict(t=50, b=50, l=50, r=50),
+    )
+
+    # Convert the figure to an HTML plot
+    plot_html = pio.to_html(fig, full_html=False)
+
+    return plot_html
 
 
 def get_comparation_plot(ticker: str) -> Figure:
@@ -94,46 +141,51 @@ def get_comparation_plot(ticker: str) -> Figure:
     today = datetime.datetime.today()  # Fecha de hoy
     start = datetime.date(today.year - 12, 1, 1)  # Fecha - 12 años
 
-    # empresas = ['MSFT', 'GOOGL', 'TSLA', 'KO']
-    empresas = ["MSFT"]
-    empresas.insert(0, tk)
+    # Define the symbols and time range
+    symbols = ["AAPL", "MSFT", "AMZN"]
+    start_date = "2020-01-01"
+    end_date = "2023-02-13"
 
-    df = pd.DataFrame()
+    # Retrieve the stock data using yfinance
+    data = yf.download(symbols, start=start_date, end=end_date)["Adj Close"]
 
-    # for empresa in empresas:
-    #    df[empresa] = yf.Ticker(empresa).history(start=start, end=today).Close # Carga las empresas que esten en la lista
+    # Create the figure using Plotly
+    fig = go.Figure()
 
-    fig = Figure()
-    ax = fig.subplots()
+    # Add the traces for each stock
+    for symbol in symbols:
+        fig.add_trace(
+            go.Scatter(x=data.index, y=data[symbol], name=symbol, line=dict(width=2))
+        )
 
-    ax.plot(df)
-    # plt.ylabel('Precio $')
-    # plt.xlabel('Año')
-    # plt.legend(empresas)
-    # plt.show()
+    # Set the layout of the figure
+    fig.update_layout(
+        title="Stock Comparison",
+        xaxis_title="Date",
+        yaxis_title="Adjusted Close Price",
+        height=500,
+        margin=dict(t=50, b=50, l=50, r=50),
+    )
 
-    # Building the base64 images
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    fig.savefig(output, format="png")
+    # Convert the figure to an HTML plot
+    plot_html = pio.to_html(fig, full_html=False)
 
-    output.seek(0)
-    png_base64 = base64.b64encode(output.getvalue()).decode("utf-8")
-    comparation_base64 = png_base64
-
-    return comparation_base64
+    return plot_html
 
 
 def get_news(ticker: str):
     tk = yf.Ticker(ticker)
 
-    news = {
-        "title1": tk.news[0].get("title", "No disponible"),
-        "link1": tk.news[0].get("link"),
-        "title2": tk.news[1].get("title", "No disponible"),
-        "link2": tk.news[1].get("link"),
-        "title3": tk.news[2].get("title", "No disponible"),
-        "link3": tk.news[2].get("link"),
-    }
+    news = {}
+    for i in range(3):
+        news[f"title_new_{i+1}"] = tk.news[i].get("title", "No disponible")
+        news[f"link_new_{i+1}"] = tk.news[i].get("link")
+        try:
+
+            news[f"img_new_{i+1}"] = (
+                tk.news[i].get("thumbnail").get("resolutions")[0].get("url")
+            )
+        except:
+            print(f"WARNING: No image in news {i+1}")
 
     return news

@@ -27,7 +27,7 @@ def company():
     company = companies_controller.get_company_data(Company(ticker=ticker))
     company_data = {
         "name": company.name,
-        "contry": company.country,
+        "country": company.country,
         "city": company.city,
         "industry": company.industry,
         "employees": company.employees,
