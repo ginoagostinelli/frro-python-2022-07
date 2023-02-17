@@ -18,9 +18,14 @@ def get_company_data(company: Company) -> Company:
     tk = yf.Ticker(company.ticker)
     stockinfo = tk.info
 
+    # Dates
+    today = datetime.datetime.today()
+    start = datetime.date(today.year - 50, 1, 1)
+
     companyWithData = Company(
         name=stockinfo.get("longName", "Sin Datos"),
         ticker=company.ticker,
+        stock=yf.download(company.ticker, start=start, end=today),
         country=stockinfo.get("country", "Sin Datos"),
         city=stockinfo.get("city", "Sin Datos"),
         industry=stockinfo.get("industry", "Sin Datos"),
@@ -31,17 +36,7 @@ def get_company_data(company: Company) -> Company:
     return companyWithData
 
 
-def get_timeline_plot(ticker: str) -> Figure:
-
-    tk = yf.Ticker(ticker)
-
-    # Fechas
-    today = datetime.datetime.today()  # Fecha de hoy
-    start = datetime.date(today.year - 12, 1, 1)  # Fecha - 12 años
-
-    # ***************#
-    # Retrieve the stock data using yfinance
-    stock = yf.download(ticker, start=start, end=today)
+def get_timeline_plot(company: Company) -> Figure:
 
     # Create the figure using Plotly
     fig = go.Figure()
@@ -49,8 +44,8 @@ def get_timeline_plot(ticker: str) -> Figure:
     # Add the closing price trace
     fig.add_trace(
         go.Scatter(
-            x=stock.index,
-            y=stock["Close"],
+            x=company.stock.index,
+            y=company.stock["Close"],
             name="Closing Price",
             line=dict(color="royalblue", width=2),
         )
@@ -58,7 +53,7 @@ def get_timeline_plot(ticker: str) -> Figure:
 
     # Set the layout of the figure
     fig.update_layout(
-        title=ticker + " Stock Price",
+        title=company.ticker + " Stock Price",
         xaxis_title="Date",
         yaxis_title="Price",
         height=500,
@@ -71,40 +66,15 @@ def get_timeline_plot(ticker: str) -> Figure:
     return plot_html
 
 
-def get_dividends_plot(ticker: str) -> Figure:
+def get_dividends_plot(company: Company) -> Figure:
 
-    """
-    tk = yf.Ticker(ticker)
-
-    dividends = tk.dividends
-    div = dividends.resample("Y").sum()  # Cantidad acumulada de dividendos en el año
-    div = div.reset_index()  # Para poder crear nuevas columnas
-
-    div["Year"] = div["Date"].dt.year  # Crea una nueva columna
-
-    fig = Figure()
-    ax = fig.subplots()
-    ax.bar(div["Year"], div["Dividends"])
-    # plt.ylabel('Rentabilidad por dividendo ($)')
-    # plt.xlabel('Año')
-    # plt.show()
-
-    # Building the base64 images
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    fig.savefig(output, format="png")
-
-    output.seek(0)
-    png_base64 = base64.b64encode(output.getvalue()).decode("utf-8")
-    dividends_base64 = png_base64
-    """
-    # Define the symbol and time range
-    start_date = "2020-01-01"
-    end_date = "2023-02-13"
+    # Dates
+    today = datetime.datetime.today()
+    start = datetime.date(today.year - 50, 1, 1)
 
     # Retrieve the stock data using yfinance
-    stock = yf.Ticker(ticker)
-    dividends = stock.dividends.loc[start_date:end_date]
+    stock = yf.Ticker(company.ticker)
+    dividends = stock.dividends
 
     # Create the figure using Plotly
     fig = go.Figure()
@@ -121,7 +91,7 @@ def get_dividends_plot(ticker: str) -> Figure:
 
     # Set the layout of the figure
     fig.update_layout(
-        title=ticker + " Dividends",
+        title=company.ticker + " Dividends",
         xaxis_title="Date",
         yaxis_title="Dividend Amount",
         height=500,
@@ -134,18 +104,17 @@ def get_dividends_plot(ticker: str) -> Figure:
     return plot_html
 
 
-def get_comparation_plot(ticker: str) -> Figure:
-    tk = yf.Ticker(ticker)
+def get_comparation_plot(company: Company) -> Figure:
 
     # Fechas
     today = datetime.datetime.today()  # Fecha de hoy
-    start = datetime.date(today.year - 12, 1, 1)  # Fecha - 12 años
+    start = datetime.date(today.year - 50, 1, 1)  # Fecha - 12 años
 
     # Define the symbols and time range
     symbols = ["AAPL", "MSFT", "AMZN"]
 
-    if ticker not in [symbols]:
-        symbols.append(ticker)
+    if company.ticker not in [symbols]:
+        symbols.append(company.ticker)
 
     # Retrieve the stock data using yfinance
     data = yf.download(symbols, start=start, end=today)["Adj Close"]
@@ -174,8 +143,8 @@ def get_comparation_plot(ticker: str) -> Figure:
     return plot_html
 
 
-def get_news(ticker: str):
-    tk = yf.Ticker(ticker)
+def get_news(company: Company):
+    tk = yf.Ticker(company.ticker)
 
     news = {}
     for i in range(3):
